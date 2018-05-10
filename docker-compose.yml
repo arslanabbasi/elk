@@ -13,7 +13,7 @@ services:
       - ELASTIC_PASSWORD=changeme
       - ALLOW_INSECURE_DEFAULT_TLS_CERT="true"
     volumes:
-      - esdata1:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
       - 9300:9300
@@ -30,6 +30,7 @@ services:
     environment:
       - "LS_JAVA_OPTS=-Xms1g -Xmx1g"
       - "FILESERVER=10.40.206.190:8080"
+      - "CONFIGFILE=first-pipeline.yml"
 #      - "LOG_LEVEL=debug"
 #      - "PIPELINE_WORKERS=2"
 #      - "XPACK_MONITORING_ENABLED"
@@ -48,11 +49,7 @@ services:
       - elasticsearch
 
 volumes:
-  esdata1:
-    driver: vsphere
-  esdata2:
-    driver: vsphere
-  esdata3:
+  esdata:
     driver: vsphere
 
 networks:
