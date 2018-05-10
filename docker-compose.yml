@@ -1,0 +1,59 @@
+on: '2.2'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.3
+    command: |
+      sh -c 'sysctl -w vm.max_map_count=262144 && /usr/local/bin/docker-entrypoint.sh eswrapper'
+    environment:
+      - cluster.name=docker-cluster
+      - node.name=elasticsearch
+      - discovery.type=zen
+      - discovery.zen.ping.unicast.hosts=elasticsearch
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - ELASTIC_PASSWORD=changeme
+      - ALLOW_INSECURE_DEFAULT_TLS_CERT="true"
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - esnet
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.2.3
+    ports:
+      - 5000:5000
+      - 5044:5044
+      - 9600:9600
+    environment:
+      - "LS_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "FILESERVER=10.40.206.190:8080"
+      - "LOG_LEVEL=debug"
+      - "PIPELINE_WORKERS=2"
+      - "XPACK_MONITORING_ENABLED"
+    networks:
+      - esnet
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.2.3
+    ports:
+      - 5601:5601
+    networks:
+      - esnet
+    depends_on:
+      - elasticsearch
+
+volumes:
+  esdata1:
+    driver: vsphere
+  esdata2:
+    driver: vsphere
+  esdata3:
+    driver: vsphere
+
+networks:
+  esnet:
+
