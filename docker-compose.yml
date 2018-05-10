@@ -1,4 +1,4 @@
-on: '2.2'
+version: '2.2'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.2.3
@@ -21,7 +21,8 @@ services:
       - esnet
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:6.2.3
+#    image: docker.elastic.co/logstash/logstash:6.2.3
+    image: vic.tpm.com/elk/mylogstash:6.2.3
     ports:
       - 5000:5000
       - 5044:5044
@@ -29,9 +30,9 @@ services:
     environment:
       - "LS_JAVA_OPTS=-Xms1g -Xmx1g"
       - "FILESERVER=10.40.206.190:8080"
-      - "LOG_LEVEL=debug"
-      - "PIPELINE_WORKERS=2"
-      - "XPACK_MONITORING_ENABLED"
+#      - "LOG_LEVEL=debug"
+#      - "PIPELINE_WORKERS=2"
+#      - "XPACK_MONITORING_ENABLED"
     networks:
       - esnet
     depends_on:
