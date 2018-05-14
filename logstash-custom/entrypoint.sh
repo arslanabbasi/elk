@@ -13,7 +13,7 @@ else
     echo "[ERROR] Please populate 'CONFIGFILE' environment variable with the file you want to use for configuration"
   else
     curl "$FILESERVER/$CONFIGFILE" -o ~/prepare.sh
-    chmod +x prepare.sh
+    chmod +x ~/prepare.sh
     echo "I am here"
     echo $(ls -l)
   fi

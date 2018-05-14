@@ -22,7 +22,7 @@ services:
 
   logstash:
 #    image: docker.elastic.co/logstash/logstash:6.2.3
-    image: vic.tpm.com/elk/mylogstash:6.2.3
+    image: vic.tpm.com/elk/mylogstash
     ports:
       - 5000:5000
       - 5044:5044
@@ -31,6 +31,11 @@ services:
       - "LS_JAVA_OPTS=-Xms1g -Xmx1g"
       - "FILESERVER=10.40.206.190:8080"
       - "CONFIGFILE=first-pipeline.yml"
+# https://www.elastic.co/guide/en/logstash/current/logstash-settings-file.html
+# All environement variables can be found in the link above
+# Replace . with _ in the options and convert alphabets to all caps for environment variable name
+
+
 #      - "LOG_LEVEL=debug"
 #      - "PIPELINE_WORKERS=2"
 #      - "XPACK_MONITORING_ENABLED"
