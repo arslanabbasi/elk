@@ -1,7 +1,7 @@
 #!/bin/sh
 
 FILESERVER="10.40.206.190:8080"
-CONFIGFILE="first-pipeline.conf"
+CONFIGFILE="configure-logstash.sh"
 if [ -z $FILESERVER ]
 then
   echo "[INFO] No file server configured for configuration!"
@@ -12,8 +12,8 @@ else
     echo "[ERROR] No config file configured"
     echo "[ERROR] Please populate 'CONFIGFILE' environment variable with the file you want to use for configuration"
   else
-    curl "$FILESERVER/$CONFIGFILE" -o ~/prepare.sh
-    chmod +x ~/prepare.sh
+    curl "$FILESERVER/$CONFIGFILE" -o /usr/share/logstash/prepare.sh
+    chmod +x /usr/share/logstash/prepare.sh
     echo "I am here"
     echo $(ls -l)
   fi
