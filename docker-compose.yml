@@ -5,7 +5,7 @@ services:
     command: |
       sh -c 'sysctl -w vm.max_map_count=262144 && /usr/local/bin/docker-entrypoint.sh eswrapper'
     environment:
-      #- cluster.name=vic-cluster
+      - cluster.name=vic-cluster
       - node.name=vic-elasticsearch-1
       - discovery.type=zen
       - "discovery.zen.ping.unicast.hosts=vic-elasticsearch-2,vic-elasticsearch-3"
@@ -28,7 +28,7 @@ services:
     command: |
       sh -c 'sysctl -w vm.max_map_count=262144 && /usr/local/bin/docker-entrypoint.sh eswrapper'
     environment:
-      #- cluster.name=vic-cluster
+      - cluster.name=vic-cluster
       - node.name=vic-elasticsearch-2
       - discovery.type=zen
       - "discovery.zen.ping.unicast.hosts=vic-elasticsearch-1,vic-elasticsearch-3"
@@ -51,7 +51,7 @@ services:
     command: |
       sh -c 'sysctl -w vm.max_map_count=262144 && /usr/local/bin/docker-entrypoint.sh eswrapper'
     environment:
-      #- cluster.name=vic-cluster
+      - cluster.name=vic-cluster
       - node.name=vic-elasticsearch-3
       - discovery.type=zen
       - "discovery.zen.ping.unicast.hosts=vic-elasticsearch-1,vic-elasticsearch-2"
@@ -70,8 +70,8 @@ services:
 #      - external
 
   logstash:
-#    image: docker.elastic.co/logstash/logstash:6.2.3
-    image: vic.tpm.com/elk/mylogstash
+    image: docker.elastic.co/logstash/logstash:6.2.3
+#    image: vic.tpm.com/elk/mylogstash
     ports:
       - 5000:5000
       - 5044:5044
@@ -80,6 +80,9 @@ services:
       - "LS_JAVA_OPTS=-Xms1g -Xmx1g"
       - "FILESERVER=10.40.206.190:8080"
       - "CONFIGFILE=first-pipeline.yml"
+      - "NODE_NAME=logstash-1"
+      - XPACK_MONITORING_ELASTICSEARCH_URL=[ "vic-elasticsearch-1", "vic-elasticsearch-2","vic-elasticsearch-3"]
+#      - OUTPUT_ELASTICSEARCH_HOSTS="vic-elasticsearch-1,//vic-elasticsearch-2,vic-elasticsearch-3"
 #      - "LOG_LEVEL=debug"
 #      - "XPACK_MONITORING_ENABLED"
 # https://www.elastic.co/guide/en/logstash/current/logstash-settings-file.html
