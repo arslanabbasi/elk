@@ -69,7 +69,7 @@ services:
       - es--net
 #      - external
 
-  logstash:
+  logstash-1:
     image: docker.elastic.co/logstash/logstash:6.2.3
 #    image: vic.tpm.com/elk/mylogstash
     ports:
@@ -78,8 +78,8 @@ services:
       - 9600:9600
     environment:
       - "LS_JAVA_OPTS=-Xms1g -Xmx1g"
-      - "FILESERVER=10.40.206.190:8080"
-      - "CONFIGFILE=first-pipeline.yml"
+#      - "FILESERVER=10.40.206.190:8080"
+#      - "CONFIGFILE=first-pipeline.yml"
       - "NODE_NAME=logstash-1"
       - XPACK_MONITORING_ELASTICSEARCH_URL=[ "vic-elasticsearch-1", "vic-elasticsearch-2","vic-elasticsearch-3"]
 #      - OUTPUT_ELASTICSEARCH_HOSTS="vic-elasticsearch-1,//vic-elasticsearch-2,vic-elasticsearch-3"
@@ -97,12 +97,42 @@ services:
       - vic-elasticsearch-2
       - vic-elasticsearch-3
 
-  kibana:
+  logstash-2:
+    image: docker.elastic.co/logstash/logstash:6.2.3
+#    image: vic.tpm.com/elk/mylogstash
+    ports:
+      - 5001:5000
+      - 5045:5044
+      - 9601:9600
+    environment:
+      - "LS_JAVA_OPTS=-Xms1g -Xmx1g"
+#      - "FILESERVER=10.40.206.190:8080"
+#      - "CONFIGFILE=first-pipeline.yml"
+      - "NODE_NAME=logstash-2"
+      - XPACK_MONITORING_ELASTICSEARCH_URL=[ "vic-elasticsearch-1", "vic-elasticsearch-2","vic-elasticsearch-3"]
+#      - OUTPUT_ELASTICSEARCH_HOSTS="vic-elasticsearch-1,//vic-elasticsearch-2,vic-elasticsearch-3"
+#      - "LOG_LEVEL=debug"
+#      - "XPACK_MONITORING_ENABLED"
+# https://www.elastic.co/guide/en/logstash/current/logstash-settings-file.html
+# All environement variables can be found in the link above
+# Replace . with _ in the options and convert alphabets to all caps for environment variable name
+# These environment variables are written in all capitals, with underscores as word separators
+    networks:
+      - es--net
+#      - external
+    depends_on:
+      - vic-elasticsearch-1
+      - vic-elasticsearch-2
+      - vic-elasticsearch-3
+
+  kibana-1:
     image: docker.elastic.co/kibana/kibana:6.2.3
     ports:
       - 5601:5601
     environment:
+#    Kibana doesn't support talking directly to multiple elasticsearch nodes now
       - ELASTICSEARCH_URL="http://vic-elasticsearch-1:9200"
+      - XPACK_SECURITY_ENCRYPTIONKEY="something_at_least_32_characters"
 # https://www.elastic.co/guide/en/kibana/current/settings.html
 # All environment variable for Kibana can be found in the link above
 # These environment variables are written in all capitals, with underscores as word separators
@@ -113,6 +143,29 @@ services:
       - vic-elasticsearch-1
       - vic-elasticsearch-2
       - vic-elasticsearch-3
+      - logstash-1
+      - logstash-2
+
+  kibana-2:
+    image: docker.elastic.co/kibana/kibana:6.2.3
+    ports:
+      - 5602:5601
+    environment:
+#    Kibana doesn't support talking directly to multiple elasticsearch nodes now
+      - ELASTICSEARCH_URL="http://vic-elasticsearch-2:9200"
+      - XPACK_SECURITY_ENCRYPTIONKEY="something_at_least_32_characters"
+# https://www.elastic.co/guide/en/kibana/current/settings.html
+# All environment variable for Kibana can be found in the link above
+# These environment variables are written in all capitals, with underscores as word separators
+    networks:
+      - es--net
+#      - external
+    depends_on:
+      - vic-elasticsearch-1
+      - vic-elasticsearch-2
+      - vic-elasticsearch-3
+      - logstash-1
+      - logstash-2
 
 volumes:
   esdata1:
