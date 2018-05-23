@@ -1,4 +1,8 @@
 #!/bin/sh
+set -e
+
+echo "I am in Entrypoint"
+echo $FILESERVER
 
 FILESERVER="10.40.206.190:8080"
 CONFIGFILE="configure-logstash.sh"
@@ -14,14 +18,14 @@ else
   else
     curl "$FILESERVER/$CONFIGFILE" -o /usr/share/logstash/prepare.sh
     chmod +x /usr/share/logstash/prepare.sh
-    echo "I am here"
-    echo $(ls -l)
+    echo "I have downloaded $CONFIGFILE"
+    echo $(whoami)
   fi
 
 fi
 
 echo $pwd
-echo "I am here"
+echo "Handing off to CMD!!"
 ## Do whatever you need with env vars here ...
 
 # Hand off to the CMD

@@ -1,13 +1,13 @@
 #!/bin/bash
+set -e
 
-docker rmi vic.tpm.com/elk/mylogstash:latest
+docker rmi -f vic.tpm.com/elk/mylogstash:latest
 
 build=$(docker build -t vic.tpm.com/elk/mylogstash . -q)
 if [ $? -eq 0 ]; then
     echo "Image $build created"
 else
     echo "Image not created!  Please check!!"
-    exit 1
 fi
 
 #image_id=$(docker images -q | cut -d$'\n' -f1)
